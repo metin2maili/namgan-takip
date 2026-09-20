@@ -28,6 +28,7 @@
             margin-bottom: 8px;
             cursor: pointer;
             border: 1px solid #ff3333;
+            transition: 0.3s;
         }
         .grid-container { 
             display: flex;
@@ -59,6 +60,7 @@
             background: #262626; 
             padding: 4px 8px; 
             border-radius: 4px; 
+            transition: background 0.2s; 
         }
         .timer-label { font-size: 12px; font-weight: 550; } 
         .timer-display { 
@@ -80,17 +82,44 @@
             cursor: pointer; 
         }
         .btn:hover { background-color: #cc7a00; }
+        
+        /* Gelişmiş Ses Menü Tasarımı */
+        .sound-menu-box {
+            background-color: #1e1e1e;
+            border: 1px solid #ff9900;
+            max-width: 300px;
+            margin: 6px auto;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .menu-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .menu-row:last-child { margin-bottom: 0; }
+        select {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            font-size: 11px;
+            padding: 3px;
+            border-radius: 4px;
+            width: 140px;
+            cursor: pointer;
+        }
         .btn-test {
             background-color: #28a745;
             color: white;
-            font-size: 11px;
-            padding: 6px;
+            font-size: 10px;
+            padding: 3px 6px;
             border: none;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
             font-weight: bold;
-            width: 100%;
-            margin-bottom: 8px;
+            margin-left: 5px;
         }
         .btn-test:hover { background-color: #218838; }
         
@@ -105,14 +134,48 @@
 </head>
 <body>
 
-    <h1>⚔️ Namgan Farm Takip</h1>
+    <h1>⚔️ Namgan Farm Takip Pro</h1>
     
-    <!-- 🚨 SESİ ZORUNLU AKTİF ETME BUTONU -->
-    <div class="status-box" id="auth-panel" onclick="unlockAudio()">
+    <!-- 🚨 SESİ AKTİF ETME ŞERİDİ -->
+    <div class="status-box" id="auth-panel" onclick="unlockAudioPro()">
         🚨 SES KİLİDİNİ AÇMAK İÇİN BURAYA TIKLA!
     </div>
     
-    <button class="btn-test" id="test-btn" onclick="testBeepSound()">🔊 ALARM SESİNİ TEST ET</button>
+    <!-- 🔊 SENİN SEÇTİĞİN 10 MUZİKLİ MENÜ -->
+    <div class="sound-menu-box">
+        <div class="menu-row">
+            <span>💎 Metin Sesi:</span>
+            <select id="select-metin">
+                <option value="sarimsak">Taşköprü Sarımsak</option>
+                <option value="ezikuzi">Ezi Kuzi Ciye Te</option>
+                <option value="ramiz">Ramiz Dayı Alarm</option>
+                <option value="aykut">Aykut Elmas Geliyor</option>
+                <option value="indian">Indian Song</option>
+                <option value="oguz">Oğuz Uyan Oğuz</option>
+                <option value="kemal">Ben Kemal Geliyorum</option>
+                <option value="undertaker">The Undertaker Bell</option>
+                <option value="takipci">Takipçi Sesiaaaaa</option>
+                <option value="cinsellik">Yürüyen Cinsellik</option>
+            </select>
+            <button class="btn-test" onclick="previewSoundPro('metin')">🔊 Test</button>
+        </div>
+        <div class="menu-row">
+            <span>👹 Boss Sesi:</span>
+            <select id="select-boss">
+                <option value="undertaker">The Undertaker Bell</option>
+                <option value="sarimsak">Taşköprü Sarımsak</option>
+                <option value="ezikuzi">Ezi Kuzi Ciye Te</option>
+                <option value="ramiz">Ramiz Dayı Alarm</option>
+                <option value="aykut">Aykut Elmas Geliyor</option>
+                <option value="indian">Indian Song</option>
+                <option value="oguz">Oğuz Uyan Oğuz</option>
+                <option value="kemal">Ben Kemal Geliyorum</option>
+                <option value="takipci">Takipçi Sesiaaaaa</option>
+                <option value="cinsellik">Yürüyen Cinsellik</option>
+            </select>
+            <button class="btn-test" onclick="previewSoundPro('boss')">🔊 Test</button>
+        </div>
+    </div>
     
     <div class="grid-container" id="chContainer"></div>
 
@@ -120,67 +183,65 @@
         const totalCH = 6;
         const container = document.getElementById('chContainer');
         let intervals = {};
-        let audioCtx = null;
+        let audioCtxPro = null;
+        
+        const soundUrls = {
+            sarimsak: "https://myinstants.com",
+            ezikuzi: "https://myinstants.com",
+            ramiz: "https://myinstants.com",
+            aykut: "https://myinstants.com",
+            indian: "https://myinstants.com",
+            oguz: "https://myinstants.com",
+            kemal: "https://myinstants.com",
+            undertaker: "https://myinstants.com",
+            takipci: "https://myinstants.com",
+            cinsellik: "https://myinstants.com"
+        };
 
-        // Tarayıcının ses motorunu zorla başlatan fonksiyon
-        function unlockAudio() {
+        // Ses motoru kilidini açan ana fonksiyon
+        function unlockAudioPro() {
             try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (!audioCtxPro) {
+                    audioCtxPro = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
+                if (audioCtxPro.state === 'suspended') {
+                    audioCtxPro.resume();
                 }
                 
-                // Başarılı olunca paneli yeşile çevir
                 const panel = document.getElementById("auth-panel");
                 panel.innerText = "✅ SES MOTORU AKTİF! KİLİT AÇILDI.";
                 panel.style.backgroundColor = "#28a745";
                 panel.style.borderColor = "#218838";
                 
-                // Test bip sesi çal
-                playDigitalBeep(600, 0.2);
-            } catch (e) {
-                alert("Ses motoru başlatılamadı: " + e);
-            }
-        }
-
-        // Bilgisayarın anakartından/hoparlöründen dijital ses üreten fonksiyon (İnternete bağımlı değildir)
-        function playDigitalBeep(frequency, duration) {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                
-                osc.type = 'sine'; // Net bip sesi
-                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime); 
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime); // %30 ses şiddeti
-                
+                // İlk kilidi açınca ufak bir bildirim sesi verir
+                let osc = audioCtxPro.createOscillator();
+                let gain = audioCtxPro.createGain();
+                osc.frequency.setValueAtTime(523.25, audioCtxPro.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtxPro.currentTime);
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
+                gain.connect(audioCtxPro.destination);
                 osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {
-                console.log("Ses çalınamadı, kilit bekleniyor.");
+                osc.stop(audioCtxPro.currentTime + 0.1);
+            } catch (e) {
+                console.log(e);
             }
         }
 
-        function testBeepSound() {
-            if (!audioCtx) {
-                alert("Önce en üstteki KIRMIZI KUTUYA tıklayarak ses kilidini açmalısın!");
-                return;
+        function previewSoundPro(type) {
+            unlockAudioPro();
+            const selected = document.getElementById(`select-${type}`).value;
+            playCustomSoundPro(selected);
+        }
+
+        function playCustomSoundPro(soundKey) {
+            const url = soundUrls[soundKey];
+            if(url) {
+                const audio = new Audio(url);
+                audio.volume = 0.6;
+                audio.play().catch(e => {
+                    console.log("Ses çalınamadı, lütfen önce üstteki kırmızı kutuya tıklayın.");
+                });
             }
-            // Üçlü güçlü bip alarmı tetikler
-            playDigitalBeep(587.33, 0.15);
-            setTimeout(() => playDigitalBeep(587.33, 0.15), 200);
-            setTimeout(() => playDigitalBeep(698.46, 0.3), 400);
         }
 
         for (let i = 1; i <= totalCH; i++) {
@@ -202,48 +263,3 @@
             container.appendChild(chDiv);
         }
 
-        function startTimer(ch, type, duration) {
-            if (!audioCtx) unlockAudio();
-            
-            const key = `${ch}-${type}`;
-            const rowElement = document.getElementById(`row-${type}-${ch}`);
-            const display = document.getElementById(`${type}-time-${ch}`);
-            
-            rowElement.classList.remove('alarm-active');
-            if (intervals[key]) clearInterval(intervals[key]);
-
-            let timeLeft = duration;
-
-            function updateTimer() {
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.innerText = `${minutes}:${seconds}`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(intervals[key]);
-                    display.innerText = "BİTTİ!";
-                    rowElement.classList.add('alarm-active');
-                    
-                    // Süre bittiğinde 3 kez keskin bip sesi çalar
-                    playDigitalBeep(659.25, 0.2);
-                    setTimeout(() => playDigitalBeep(659.25, 0.2), 250);
-                    setTimeout(() => playDigitalBeep(659.25, 0.4), 500);
-                    
-                    setTimeout(() => {
-                        startTimer(ch, type, duration);
-                        rowElement.classList.add('alarm-active');
-                    }, 1000);
-                } else {
-                    timeLeft--;
-                }
-            }
-
-            updateTimer();
-            intervals[key] = setInterval(updateTimer, 1000);
-        }
-    </script>
-</body>
-</html>
